@@ -1,0 +1,4 @@
+paths:
+  rgb_folder: '/home/hazel/Calibration/data/rgb' 
+  depth_folder: "estimated_depth/"
+  depth_folder_raw: "estimated_depth/raw"

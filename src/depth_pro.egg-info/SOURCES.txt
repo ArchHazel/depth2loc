@@ -1,12 +1,10 @@
-ACKNOWLEDGEMENTS.md
-CODE_OF_CONDUCT.md
-CONTRIBUTING.md
-LICENSE
-README.md
+.gitignore
+depth_pro_run.py
+environment.yml
 get_pretrained_models.sh
+make_it_video.py
 pyproject.toml
-data/depth-pro-teaser.jpg
-data/example.jpg
+side_py_side_stich.py
 src/depth_pro/__init__.py
 src/depth_pro/depth_pro.py
 src/depth_pro/utils.py
