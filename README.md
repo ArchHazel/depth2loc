@@ -10,7 +10,9 @@ source get_pretrained_models.sh
 conda activate depth-pro
 ```
 
-### Quick check "subjects in the view" video length (please specify the sensor name)
+### Quick check "subjects in the view" video length 
+Please specify the sensor name. 
+If visiable list for that sensor does not exist in the params.yaml, it needs be annotated manually.
 ```bash
 python -m depth2loc.utils.helper --sensor_name HAR6
 ```
