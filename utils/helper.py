@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from scipy.signal import find_peaks, butter, lfilter
 from depth2loc.params import *
 import tzlocal
+import argparse
 
 
 
@@ -280,9 +281,11 @@ def calculate_activity_durations_using_mask(activities, mask):
     print("total duration: ", sum)
 
 if __name__ == "__main__":
-#  conda activate depth-pro
-#  python -m depth2loc.utils.helper
-    to_exam_sensor_name = "HAR6"
+    argparser = argparse.ArgumentParser(description="Process UWB data")
+    argparser.add_argument("--sensor_name", type=str, default="HAR6", help="sensor name, e.g., HAR6")
+    args = argparser.parse_args()
+    to_exam_sensor_name = args.sensor_name
+    
     mask = get_mask_for_activity_visibility_from_manually_selection(action_amount, visible_s, to_exam_sensor_name)
     start_end_time, acts = load_segment_file_to_datetime(seg_f_txt)
     activities = build_activity_dict(start_end_time, acts)
