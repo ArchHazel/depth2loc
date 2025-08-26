@@ -15,7 +15,7 @@ conda activate depth-pro
 python -m depth2loc.utils.helper --sensor_name HAR6
 ```
 
-### Slice video using timetable of activtiy.
+### Slice video using timetable of activity.
 Sliced video clips are put in the same folder as original color video `rgb.avi` with name `rgb_00.avi` - `rgb_37.avi`.
 > I have confirmed that sessions after 2025/04/22 have and only have 38 activities. If you are dealing with earlier sessions, I suggest printing out the timetable first and paying closer attention.
 
