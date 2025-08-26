@@ -6,18 +6,20 @@ import torch
 import numpy as np
 import json
 import matplotlib.pyplot as plt
-from tqdm import tqdm
+import tqdm
 from matplotlib import cm
 from matplotlib.colors import Normalize
 import yaml
+from  calibrateKinectv2.calibrateKinect import *
 
 # Load parameters from params.yaml
-with open('params.yaml', 'r') as file:
+with open('depth2loc/params.yaml', 'r') as file:
     params = yaml.safe_load(file)
     paths = params['paths']
-    rgb_folder = paths['rgb_folder']
-    depth_folder = paths['depth_folder']
-    depth_folder_raw = paths['depth_folder_raw']
+    rgb_avi = paths['rgb_f']
+    rgb_folder = paths['rgb_F']
+    depth_folder = paths['depth_F_png']
+    depth_folder_raw = paths['depth_F_npy']
 
 
 def list_and_sort_files(folder,key=None):
@@ -35,7 +37,6 @@ def list_and_sort_files(folder,key=None):
 
 if __name__ == "__main__":
 
-    # keypoints_path = f'/home/hazel/Datasets/image-online/{movie_name}_pose/keypoints.json'
 
 
     keypoints_3D = {}
@@ -49,6 +50,11 @@ if __name__ == "__main__":
 
     os.makedirs(depth_folder, exist_ok=True)
     os.makedirs(depth_folder_raw, exist_ok=True)
+
+    # extract avi into rgb_folder
+    extract_rgb_frames(rgb_avi,rgb_folder,True)
+
+
     imgs_path = list_and_sort_files(rgb_folder, key=lambda x: int(x.split('.')[0].split('_')[-1]))
 
     # Load model and preprocessing transform
@@ -57,7 +63,7 @@ if __name__ == "__main__":
     max_depth = 8  # Maximum depth in meters.
 
 
-    for img_path in tqdm(imgs_path, desc="Estimating depth"):
+    for img_path in tqdm.tqdm(imgs_path, desc="Estimating depth"):
         run = True
         if run:
             image, _, f_px = depth_pro.load_rgb(os.path.join(rgb_folder, img_path))
@@ -117,7 +123,7 @@ if __name__ == "__main__":
 
     norm = Normalize(vmin=0, vmax=max_depth)
     cmap = cm.get_cmap('jet', 256)
-    for img_idx, img_path in tqdm(enumerate(imgs_path), desc="Visualizing depth on image"):
+    for img_idx, img_path in tqdm.tqdm(enumerate(imgs_path), desc="Visualizing depth on image"):
         if img_path in keypoints_3D:
             image = cv2.imread(os.path.join(rgb_folder, img_path))
             cur_img_path = img_path
@@ -163,7 +169,7 @@ if __name__ == "__main__":
     # sort the keypoints_3D by time
     keypoints_3D = dict(sorted(keypoints_3D.items(), key=lambda item: int(item[0].split('.')[0][-4:])))
 
-    for img_path,kpts in tqdm(keypoints_3D.items(), desc="Visualizing 3D points on bird's eye view"):
+    for img_path,kpts in tqdm.tqdm(keypoints_3D.items(), desc="Visualizing 3D points on bird's eye view"):
         time_stamp = int(img_path.split('.')[0][-4:])
         if time_stamp % 10 != 0:
             continue
