@@ -9,17 +9,11 @@ import matplotlib.pyplot as plt
 import tqdm
 from matplotlib import cm
 from matplotlib.colors import Normalize
-import yaml
 from  calibrateKinectv2.calibrateKinect import *
+from depth2loc.params import *
 
-# Load parameters from params.yaml
-with open('depth2loc/params.yaml', 'r') as file:
-    params = yaml.safe_load(file)
-    paths = params['paths']
-    rgb_avi = paths['rgb_f']
-    rgb_folder = paths['rgb_F']
-    depth_folder = paths['depth_F_png']
-    depth_folder_raw = paths['depth_F_npy']
+
+
 
 
 def list_and_sort_files(folder,key=None):
@@ -46,13 +40,8 @@ if __name__ == "__main__":
     else:
         keypoints = {}
 
-
-
-    os.makedirs(depth_folder, exist_ok=True)
-    os.makedirs(depth_folder_raw, exist_ok=True)
-
     # extract avi into rgb_folder
-    extract_rgb_frames(rgb_avi,rgb_folder,True)
+    extract_rgb_frames_smart_termination_if_done_before(rgb_f,rgb_F,True)
 
 
     imgs_path = list_and_sort_files(rgb_folder, key=lambda x: int(x.split('.')[0].split('_')[-1]))

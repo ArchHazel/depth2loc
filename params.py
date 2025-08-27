@@ -10,6 +10,9 @@ with open(my_params_path, 'r') as f:
     depth_F_png = paths.get('depth_F_png', None)
     depth_F_npy = paths.get('depth_F_npy', None)
     seg_f_txt = paths.get('seg_f_txt', None)
+    per_frame_action_labels_path = paths.get('per_frame_action_labels', None)
 
     visible_s = params.get('HAR6', {}).get('visible_s', None)
     action_amount = params.get('actions', {}).get('total_amount', None)
+
+    fps = params.get('fps', 0)  # Default to 15 if not specified

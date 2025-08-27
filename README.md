@@ -20,14 +20,16 @@ python -m depth2loc.utils.helper --sensor_name HAR6
 ### Slice video using timetable of activity. (ffmpeg is for acceleration)
 Keep in mind, typically we do not actually slice video since it is very time consuming. Instead, we save the `action_labels_per_frame`.
 ```bash
-python -m depth2loc.slice_video
+python -m depth2loc.modules.assign_per_frame_label_using_action_label_file
 ```
 
 Add this argument `--slice-video` while debugging. Sliced video clips are put in the same folder as original color video `rgb.avi` with name `rgb_00.avi` - `rgb_37.avi`.
 ```bash
-python -m depth2loc.slice_video --slice_video
+python -m depth2loc.modules.assign_per_frame_label_using_action_label_file --slice_video
 ```
 > I have confirmed that sessions after 2025/04/22 have and only have 38 activities. If you are dealing with earlier sessions, I suggest printing out the timetable first and paying closer attention.
+
+### Run Depth estimation on frames with human in 
 
 
 ### Human in the loop
