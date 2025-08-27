@@ -18,7 +18,8 @@ def get_per_frame_action_label(rgb_ts_f_txt, segment_file):
             frame_ts = float(line.strip())
             if segment_idx >= len(segments):
                 action_label[frame_idx] = -1
-                continue    
+                frame_idx += 1
+                continue
             if frame_ts < segments[segment_idx][0] and is_background:
                 # print("frame_ts < segments[segment_idx][0] and is_background: ", frame_ts, segments[segment_idx][0])
                 action_label[frame_idx] = -1

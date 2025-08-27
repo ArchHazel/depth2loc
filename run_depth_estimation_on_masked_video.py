@@ -4,107 +4,50 @@ import os
 import cv2
 import torch
 import numpy as np
-import json
+from depth2loc.utils.basic_io import * 
 import matplotlib.pyplot as plt
 import tqdm
 from matplotlib import cm
 from matplotlib.colors import Normalize
 from  calibrateKinectv2.calibrateKinect import *
-from depth2loc.params import *
 
 
 
 
 
-def list_and_sort_files(folder,key=None):
-    """
-    List and sort files in a given folder.
-    """
-    files = os.listdir(folder)
-    if key is not None:
-        files.sort(key=key)
-    else:
-        files.sort()
-    return files
 
 
 
-if __name__ == "__main__":
 
-
-
+def draw_joint_traj():
     keypoints_3D = {}
     keypoints_2D_projected = {}
-    if False:
-        keypoints = json.load(open(keypoints_path, 'r'))
-    else:
-        keypoints = {}
-
-    # extract avi into rgb_folder
-    extract_rgb_frames_smart_termination_if_done_before(rgb_f,rgb_F,True)
-
-
-    imgs_path = list_and_sort_files(rgb_folder, key=lambda x: int(x.split('.')[0].split('_')[-1]))
-
-    # Load model and preprocessing transform
-    model, transform = depth_pro.create_model_and_transforms(device=torch.device("cuda:0") ,precision= torch.float16)
-    model.eval()
-    max_depth = 8  # Maximum depth in meters.
-
-
-    for img_path in tqdm.tqdm(imgs_path, desc="Estimating depth"):
-        run = True
-        if run:
-            image, _, f_px = depth_pro.load_rgb(os.path.join(rgb_folder, img_path))
-            image = transform(image)
-            prediction = model.infer(image, f_px=f_px)
-            depth = prediction["depth"]  # Depth in [m].
-            depth = depth.detach().cpu().numpy()
-            focallength_px = prediction["focallength_px"]  # Focal length in pixels. 
-            # cv2.imwrite(os.path.join(depth_folder_raw, img_path), depth)
-            np.save(os.path.join(depth_folder_raw, img_path.split('.')[0] + '.npy'), depth)
-            depth_vis = depth * 255 / max_depth
-            depth_vis = depth_vis.astype("uint8")
-            cv2.imwrite(os.path.join(depth_folder, img_path), depth_vis)
-        else:
-            depth = np.load(os.path.join(depth_folder_raw, img_path.split('.')[0] + '.npy'))
-            # depth = cv2.imread(os.path.join(depth_folder_raw, img_path), cv2.IMREAD_UNCHANGED)
-            # if img_path == "frame_0210.jpg" or img_path == "frame_0220.jpg" or img_path == "frame_0200.jpg":
-            if False:
-                depth_vis = depth * 255 / max_depth
-                depth_vis = depth_vis.astype("uint8")
-                cv2.imshow("depth", depth_vis)
-                cv2.waitKey(0)
-        
-        continue
-        
-
-        if img_path in keypoints:
-            keypoint = keypoints[img_path]
-            for i in range(len(keypoint)):
-                kpt = keypoint[i]
-                depth_kp = depth[kpt[1], kpt[0]]
-                x = kpt[0] 
-                y = kpt[1] 
-                # Convert to camera coordinates
-                x_camera = (x - intrinsic_matrix[0, 2]) * depth_kp / intrinsic_matrix[0, 0]
-                y_camera = (y - intrinsic_matrix[1, 2]) * depth_kp / intrinsic_matrix[1, 1]
-                z_camera = depth_kp
+    if img_path in keypoints:
+        keypoint = keypoints[img_path]
+        for i in range(len(keypoint)):
+            kpt = keypoint[i]
+            depth_kp = depth[kpt[1], kpt[0]]
+            x = kpt[0] 
+            y = kpt[1] 
+            # Convert to camera coordinates
+            x_camera = (x - intrinsic_matrix[0, 2]) * depth_kp / intrinsic_matrix[0, 0]
+            y_camera = (y - intrinsic_matrix[1, 2]) * depth_kp / intrinsic_matrix[1, 1]
+            z_camera = depth_kp
 
 
 
 
 
 
-                if img_path not in keypoints_3D:
-                    keypoints_3D[img_path] = [(x_camera, y_camera, z_camera)]
-                    keypoints_2D_projected[img_path] = [(x, y)]
-                    
-                else:
-                    keypoints_3D[img_path].append((x_camera, y_camera, z_camera))
-                    keypoints_2D_projected[img_path].append((x, y))
+            if img_path not in keypoints_3D:
+                keypoints_3D[img_path] = [(x_camera, y_camera, z_camera)]
+                keypoints_2D_projected[img_path] = [(x, y)]
                 
-            # print("Keypoints 3D:", keypoints_3D[img_path])
+            else:
+                keypoints_3D[img_path].append((x_camera, y_camera, z_camera))
+                keypoints_2D_projected[img_path].append((x, y))
+            
+        # print("Keypoints 3D:", keypoints_3D[img_path])
 
 
     # visualize on original image
@@ -201,3 +144,49 @@ if __name__ == "__main__":
 
         plt.savefig(os.path.join(visualize_video_folder, f'floorplan_{img_path}.png'), dpi=300)
                     
+
+def depth_pro_init():
+    model, transform = depth_pro.create_model_and_transforms(device=torch.device("cuda:0") ,precision= torch.float16)
+    model.eval()
+    return model, transform
+
+
+if __name__ == "__main__":
+
+
+    extract_rgb_frames_smart_termination_if_done_before(rgb_f,rgb_F)
+
+    imgs_path = list_images_with_human_presence()
+    print(imgs_path)
+    exit(0)
+
+
+    model, transform = depth_pro_init()
+
+
+    for img_path in tqdm.tqdm(imgs_path, desc="Estimating depth"):
+        run = True
+        if run:
+            image, _, f_px = depth_pro.load_rgb(os.path.join(rgb_folder, img_path))
+            image = transform(image)
+            prediction = model.infer(image, f_px=f_px)
+            depth = prediction["depth"]  # Depth in [m].
+            depth = depth.detach().cpu().numpy()
+            focallength_px = prediction["focallength_px"]  # Focal length in pixels. 
+            # cv2.imwrite(os.path.join(depth_folder_raw, img_path), depth)
+            np.save(os.path.join(depth_folder_raw, img_path.split('.')[0] + '.npy'), depth)
+            depth_vis = depth * 255 / max_depth
+            depth_vis = depth_vis.astype("uint8")
+            cv2.imwrite(os.path.join(depth_folder, img_path), depth_vis)
+        else:
+            depth = np.load(os.path.join(depth_folder_raw, img_path.split('.')[0] + '.npy'))
+            # depth = cv2.imread(os.path.join(depth_folder_raw, img_path), cv2.IMREAD_UNCHANGED)
+            # if img_path == "frame_0210.jpg" or img_path == "frame_0220.jpg" or img_path == "frame_0200.jpg":
+            if False:
+                depth_vis = depth * 255 / max_depth
+                depth_vis = depth_vis.astype("uint8")
+                cv2.imshow("depth", depth_vis)
+                cv2.waitKey(0)
+        
+        continue
+

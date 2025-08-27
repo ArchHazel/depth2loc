@@ -23,13 +23,13 @@ Keep in mind, typically we do not actually slice video since it is very time con
 python -m depth2loc.modules.assign_per_frame_label_using_action_label_file
 ```
 
-Add this argument `--slice-video` while debugging. Sliced video clips are put in the same folder as original color video `rgb.avi` with name `rgb_00.avi` - `rgb_37.avi`.
+Add this argument `--slice-video` while debugging. Sliced video clips are put in the same folder as original color video `rgb.avi` with name `rgb_00.mp4` - `rgb_37.mp4`.
 ```bash
 python -m depth2loc.modules.assign_per_frame_label_using_action_label_file --slice_video
 ```
 > I have confirmed that sessions after 2025/04/22 have and only have 38 activities. If you are dealing with earlier sessions, I suggest printing out the timetable first and paying closer attention.
 
-### Run Depth estimation on frames with human in 
+### Run Depth estimation on frames with human presence
 
 
 ### Human in the loop
