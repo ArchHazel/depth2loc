@@ -17,8 +17,16 @@ If visiable list for that sensor does not exist in the params.yaml, it needs be 
 python -m depth2loc.utils.helper --sensor_name HAR6
 ```
 
-### Slice video using timetable of activity.
-Sliced video clips are put in the same folder as original color video `rgb.avi` with name `rgb_00.avi` - `rgb_37.avi`.
+### Slice video using timetable of activity. (ffmpeg is for acceleration)
+Keep in mind, typically we do not actually slice video since it is very time consuming. Instead, we save the `action_labels_per_frame`.
+```bash
+python -m depth2loc.slice_video
+```
+
+Add this argument `--slice-video` while debugging. Sliced video clips are put in the same folder as original color video `rgb.avi` with name `rgb_00.avi` - `rgb_37.avi`.
+```bash
+python -m depth2loc.slice_video --slice_video
+```
 > I have confirmed that sessions after 2025/04/22 have and only have 38 activities. If you are dealing with earlier sessions, I suggest printing out the timetable first and paying closer attention.
 
 
