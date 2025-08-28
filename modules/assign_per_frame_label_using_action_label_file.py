@@ -79,20 +79,20 @@ def slice_video_using_ffmpeg_with_per_frame_action_label(rgb_f_parent, action_la
         subprocess.run(cmd)
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Slice video into segments")
-    parser.add_argument("--slice_video", action="store_true", help="Whether to slice video into segments")
-    args = parser.parse_args()
+@hydra.main(config_path="/home/hhan2/Scripts/hof", config_name="config",version_base=None)
+def main(cfg: DictConfig):
 
-    action_labels_per_frame, act_amount = get_per_frame_action_label(rgb_ts_f_txt, seg_f_txt)
-    if act_amount != action_amount:
-        print(f"Warning: action amount {act_amount} != {action_amount} in params.yaml")
+
+    action_labels_per_frame, act_amount = get_per_frame_action_label(cfg.model.paths.rgb_ts_f_txt, cfg.model.paths.seg_f_txt)
+    if act_amount != cfg.model.actions.total_amount:
+        print(f"Warning: action amount {act_amount} != {cfg.model.actions.total_amount} in params.yaml")
     else:
         print(f"Fortunately, we have {act_amount} actions as expected.")
 
-    save_per_frame_action_labels(action_labels_per_frame)
+    save_per_frame_action_labels(action_labels_per_frame,  cfg)
 
+    if cfg.model.visualize_video_slices:
+        slice_video_using_ffmpeg_with_per_frame_action_label(cfg.model.paths.rgb_f.rsplit('/', 1)[0], action_labels_per_frame, act_amount)
 
-    if args.slice_video:
-        slice_video_using_ffmpeg_with_per_frame_action_label(rgb_f.rsplit('/', 1)[0], action_labels_per_frame, action_amount)
-
+if __name__ == "__main__":
+    main()

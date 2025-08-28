@@ -162,7 +162,6 @@ def depth_pro_infer(image_path, model, transform):
 
 @hydra.main(config_path="/home/hhan2/Scripts/hof", config_name="config",version_base=None)
 def main(cfg: DictConfig):
-
     extract_rgb_frames_smart_termination_if_done_before(cfg.model.paths.rgb_f,cfg.model.paths.rgb_F)
     imgs_path = list_images_with_human_presence()
     model, transform = depth_pro_init()

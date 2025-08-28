@@ -1,18 +1,12 @@
 import os.path
-
 import numpy as np
-# from scipy.signal import find_peaks
 import datetime
-from datetime import timedelta, timezone
-# from scipy.signal import butter, lfilter
+from datetime import  timezone 
 import imutils
 from matplotlib import cm
 import cv2
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks, butter, lfilter
-from depth2loc.params import *
-import tzlocal
-import argparse
 import hydra
 from omegaconf import DictConfig
 
@@ -286,9 +280,7 @@ def calculate_activity_durations_using_mask(activities, mask):
 
 @hydra.main(config_path="/home/hhan2/Scripts/hof", config_name="config",version_base=None)
 def main(cfg: DictConfig):
-
-    to_exam_sensor_name = cfg.sensor.name
-
+    to_exam_sensor_name = cfg.model.calculate_duration.sensor_name
     mask = get_mask_for_activity_visibility_from_manually_selection(cfg.model.actions.total_amount, cfg.model.HAR6.visible_s, to_exam_sensor_name)
     start_end_time, acts = load_segment_file_to_datetime(cfg.model.paths.seg_f_txt)
     activities = build_activity_dict(start_end_time, acts)
