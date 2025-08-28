@@ -11,7 +11,7 @@ conda activate depth-pro
 ```
 
 ### Quick check "subjects in the view" video length 
-Please specify the sensor name `calculate_duration` @ `depth-pro.yaml` .
+You can specify the sensor name `calculate_duration.sensor_name` @ `depth-pro.yaml`.
 If visiable list for that sensor does not exist in the params.yaml, it needs be annotated manually.
 ```bash
 python -m depth2loc.utils.helper
@@ -23,7 +23,7 @@ Keep in mind, typically we do not actually slice video since it is very time con
 python -m depth2loc.modules.assign_per_frame_label_using_action_label_file
 ```
 
-Please put `visualize_video_slices` @ `depth-pro.yaml` as `True` while debugging. Sliced video clips are put in the same folder as original color video `rgb.avi` with name `rgb_00.mp4` - `rgb_37.mp4`.
+You may set `visualize_sliced_video` @ `depth-pro.yaml` as `True` while debugging. Sliced video clips are put in the same folder as original color video `rgb.avi` with name `rgb_00.mp4` - `rgb_37.mp4`.
 
 > I have confirmed that sessions after 2025/04/22 have and only have 38 activities. If you are dealing with earlier sessions, I suggest printing out the timetable first and paying closer attention.
 
