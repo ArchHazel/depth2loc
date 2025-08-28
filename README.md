@@ -18,7 +18,7 @@ python -m depth2loc.utils.helper
 ```
 
 ### Slice video using timetable of activity. (ffmpeg is for acceleration)
-Keep in mind, typically we do not actually slice video since it is very time consuming. Instead, we save the `action_labels_per_frame`.
+Keep in mind, typically we do not actually slice video since it is very time consuming. Instead, we save the per-frame boolean mask `action_labels_per_frame`.
 ```bash
 python -m depth2loc.modules.assign_per_frame_label_using_action_label_file
 ```
