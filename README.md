@@ -11,10 +11,10 @@ conda activate depth-pro
 ```
 
 ### Quick check "subjects in the view" video length 
-Please specify the sensor name. 
+Please specify the sensor name @ config.yaml.
 If visiable list for that sensor does not exist in the params.yaml, it needs be annotated manually.
 ```bash
-python -m depth2loc.utils.helper --sensor_name HAR6
+python -m depth2loc.utils.helper
 ```
 
 ### Slice video using timetable of activity. (ffmpeg is for acceleration)
@@ -30,6 +30,9 @@ python -m depth2loc.modules.assign_per_frame_label_using_action_label_file --sli
 > I have confirmed that sessions after 2025/04/22 have and only have 38 activities. If you are dealing with earlier sessions, I suggest printing out the timetable first and paying closer attention.
 
 ### Run Depth estimation on frames with human presence
+```bash
+python -m depth2loc.run_depth_estimation_on_masked_video
+```
 
 
 ### Human in the loop

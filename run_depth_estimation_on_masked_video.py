@@ -1,4 +1,3 @@
-from PIL import Image
 import depth_pro
 import os
 import cv2
@@ -9,10 +8,10 @@ import matplotlib.pyplot as plt
 import tqdm
 from matplotlib import cm
 from matplotlib.colors import Normalize
+import calibrateKinectv2
 from  calibrateKinectv2.calibrateKinect import *
-
-
-
+import hydra
+from omegaconf import DictConfig
 
 
 
@@ -150,43 +149,28 @@ def depth_pro_init():
     model.eval()
     return model, transform
 
+def depth_pro_infer(image_path, model, transform):
+    image, _, f_px = depth_pro.load_rgb(image_path)
+    # f_px = np.mean([color_intrinsics[0,0], color_intrinsics[1,1]])
+    # print(f"Focal length in pixels: {f_px}")
+    image = transform(image)
+    prediction = model.infer(image, f_px=f_px)
+    depth = prediction["depth"]  # Depth in [m].
+    depth = depth.detach().cpu().numpy()
+    print(f"estimated focal length in pixels: {prediction['focallength_px']}")
+    return depth
 
-if __name__ == "__main__":
+@hydra.main(config_path="/home/hhan2/Scripts/hof", config_name="config",version_base=None)
+def main(cfg: DictConfig):
 
-
-    extract_rgb_frames_smart_termination_if_done_before(rgb_f,rgb_F)
-
+    extract_rgb_frames_smart_termination_if_done_before(cfg.model.paths.rgb_f,cfg.model.paths.rgb_F)
     imgs_path = list_images_with_human_presence()
-    print(imgs_path)
-    exit(0)
-
-
     model, transform = depth_pro_init()
 
-
     for img_path in tqdm.tqdm(imgs_path, desc="Estimating depth"):
-        run = True
-        if run:
-            image, _, f_px = depth_pro.load_rgb(os.path.join(rgb_folder, img_path))
-            image = transform(image)
-            prediction = model.infer(image, f_px=f_px)
-            depth = prediction["depth"]  # Depth in [m].
-            depth = depth.detach().cpu().numpy()
-            focallength_px = prediction["focallength_px"]  # Focal length in pixels. 
-            # cv2.imwrite(os.path.join(depth_folder_raw, img_path), depth)
-            np.save(os.path.join(depth_folder_raw, img_path.split('.')[0] + '.npy'), depth)
-            depth_vis = depth * 255 / max_depth
-            depth_vis = depth_vis.astype("uint8")
-            cv2.imwrite(os.path.join(depth_folder, img_path), depth_vis)
-        else:
-            depth = np.load(os.path.join(depth_folder_raw, img_path.split('.')[0] + '.npy'))
-            # depth = cv2.imread(os.path.join(depth_folder_raw, img_path), cv2.IMREAD_UNCHANGED)
-            # if img_path == "frame_0210.jpg" or img_path == "frame_0220.jpg" or img_path == "frame_0200.jpg":
-            if False:
-                depth_vis = depth * 255 / max_depth
-                depth_vis = depth_vis.astype("uint8")
-                cv2.imshow("depth", depth_vis)
-                cv2.waitKey(0)
-        
-        continue
+        depth = depth_pro_infer(os.path.join(cfg.model.paths.rgb_F, img_path), model, transform)
+        save_predicted_depth_in_png_and_npy(depth,img_path)
 
+
+if __name__ == "__main__":
+    main()
