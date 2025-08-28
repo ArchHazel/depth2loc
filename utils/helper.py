@@ -280,8 +280,8 @@ def calculate_activity_durations_using_mask(activities, mask):
 
 @hydra.main(config_path="/home/hhan2/Scripts/hof", config_name="config",version_base=None)
 def main(cfg: DictConfig):
-    to_exam_sensor_name = cfg.model.calculate_duration.sensor_name
-    mask = get_mask_for_activity_visibility_from_manually_selection(cfg.model.actions.total_amount, cfg.model.HAR6.visible_s, to_exam_sensor_name)
+    to_exam_sensor_name = cfg.model.sensor_name
+    mask = get_mask_for_activity_visibility_from_manually_selection(cfg.dataset.actions.total_amount, cfg.model.HAR6.visible_s, to_exam_sensor_name)
     start_end_time, acts = load_segment_file_to_datetime(cfg.model.paths.seg_f_txt)
     activities = build_activity_dict(start_end_time, acts)
     calculate_activity_durations_using_mask(activities, mask)

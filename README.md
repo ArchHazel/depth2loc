@@ -11,7 +11,7 @@ conda activate depth-pro
 ```
 
 ### Quick check "subjects in the view" video length 
-You can specify the sensor name `calculate_duration.sensor_name` @ `depth-pro.yaml`.
+You can specify the sensor name `sensor_name` @ `depth-pro.yaml`.
 If visiable list for that sensor does not exist in the params.yaml, it needs be annotated manually.
 ```bash
 python -m depth2loc.utils.helper
