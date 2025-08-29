@@ -1,21 +1,13 @@
 import depth_pro
 import os
-import cv2
 import torch
 import numpy as np
 from depth2loc.utils.basic_io import * 
-import matplotlib.pyplot as plt
 import tqdm
-from matplotlib import cm
-from matplotlib.colors import Normalize
-import calibrateKinectv2
 from  calibrateKinectv2.calibrateKinect import *
 import hydra
 from omegaconf import DictConfig
-
-
-                 
-
+         
 def depth_pro_init():
     model, transform = depth_pro.create_model_and_transforms(device=torch.device("cuda:0") ,precision= torch.float16)
     model.eval()
@@ -30,7 +22,6 @@ def depth_pro_infer(image_path, model, transform,cfg):
     prediction = model.infer(image, f_px=f_px)
     depth = prediction["depth"]  # Depth in [m].
     depth = depth.detach().cpu().numpy()
-    print(f"estimated focal length in pixels: {prediction['focallength_px']}")
     return depth
 
 @hydra.main(config_path="/home/hhan2/Scripts/hof", config_name="config",version_base=None)
@@ -42,7 +33,6 @@ def main(cfg: DictConfig):
     for img_path in tqdm.tqdm(imgs_path, desc="Estimating depth"):
         depth = depth_pro_infer(os.path.join(cfg.model.paths.rgb_F, img_path), model, transform,cfg)
         save_predicted_depth_in_png_and_npy(depth,img_path,cfg)
-
 
 if __name__ == "__main__":
     main()

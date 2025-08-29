@@ -1,6 +1,7 @@
 from depth2loc.utils.helper import *
 from tqdm import trange
-from depth2loc.utils.basic_io import save_per_frame_action_labels,from_frames_to_video
+from depth2loc.utils.basic_io import save_per_frame_action_labels
+from depth2loc.utils.basic_draw import from_frames_to_video
 import hydra
 from omegaconf import DictConfig
 
