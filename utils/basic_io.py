@@ -20,6 +20,7 @@ def list_and_sort_files(folder,key=None):
         files.sort(key=key)
     else:
         files.sort()
+    files = [ f"{folder}/{file}" for file in files]
     return files
 
 

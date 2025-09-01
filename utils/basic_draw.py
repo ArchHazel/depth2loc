@@ -38,5 +38,6 @@ def stitch_two_images_side_by_side_and_save(left_img_F , right_img_F,output_F):
         left = cv2.imread(left_img)
         right = cv2.imread(right_img)
         stitched = cv2.hconcat([left, right])
-        stitched_images.append(stitched)
-    cv2.imwrite(output_F, cv2.vconcat(stitched_images))
+        stitched_image_path = os.path.join(output_F, os.path.basename(left_img))
+        cv2.imwrite(stitched_image_path, stitched)
+        break

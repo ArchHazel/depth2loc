@@ -31,7 +31,7 @@ def main(cfg: DictConfig):
     model, transform = depth_pro_init()
 
     for img_path in tqdm.tqdm(imgs_path, desc="Estimating depth"):
-        depth = depth_pro_infer(os.path.join(cfg.model.paths.rgb_F, img_path), model, transform,cfg)
+        depth = depth_pro_infer(img_path, model, transform,cfg)
         save_predicted_depth_in_png_and_npy(depth,img_path,cfg)
 
 if __name__ == "__main__":
