@@ -2,7 +2,7 @@ import json
 from omegaconf import DictConfig
 import os
 import numpy as np
-from calibrateKinectv2.depth_preprocessing import visualize_depth
+from calibrateKinectv2.utils.depth_utils import visualize_depth
 
 
 def save_per_frame_action_labels(action_labels_per_frame, cfg: DictConfig):

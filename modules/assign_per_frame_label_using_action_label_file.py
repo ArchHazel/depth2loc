@@ -1,7 +1,7 @@
 from depth2loc.utils.helper import *
 from tqdm import trange
 from depth2loc.utils.basic_io import save_per_frame_action_labels
-from depth2loc.utils.basic_draw import from_frames_to_video
+from depth2loc.utils.basic_draw import from_frames_list_to_video
 import hydra
 from omegaconf import DictConfig
 
@@ -66,7 +66,7 @@ def slice_video_using_ffmpeg_with_per_frame_action_label(rgb_f_parent, action_la
             print(f"Warning: action {i} is not continuous or does not exist. Please check the timetable and rgb_ts_f_txt.")
             continue
 
-        from_frames_to_video(frame_path_lists, cfg.dataset.fps, f"{rgb_f_parent}/rgb_{i:02d}.mp4")
+        from_frames_list_to_video(frame_path_lists, cfg.dataset.fps, f"{rgb_f_parent}/rgb_{i:02d}.mp4")
 
 
 
